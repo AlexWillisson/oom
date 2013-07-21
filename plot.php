@@ -62,9 +62,14 @@ echo ("</script>\n");
 echo ("</head>\n");
 echo ("<body>\n");
 
+echo ("<form action='plot.php'>\n");
+echo ("<input name='tracked' size='40' />\n");
+echo ("<input type='submit' value='Plot' />\n");
+echo ("</form>\n");
+
 echo ("	<div id='content'>\n");
-echo ("	<div class='demo-container'>\n");
-echo ("	<div id='placeholder' class='demo-placeholder'></div>\n");
+echo ("	<div class='main-container'>\n");
+echo ("	<div id='placeholder' class='main-placeholder'></div>\n");
 echo ("	</div>\n");
 echo ("	</div>\n");
 

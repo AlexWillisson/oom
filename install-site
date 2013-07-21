@@ -1,0 +1,16 @@
+#! /bin/sh
+
+FILES="add.php
+common.php
+index.php
+jquery.flot.js
+jquery.flot.time.js
+jquery.js
+login.php
+plot.css
+plot.php"
+
+for f in $FILES
+do
+    ln -sf `pwd`/$f /var/www/tracking/$f
+done
