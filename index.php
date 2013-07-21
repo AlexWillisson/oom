@@ -38,15 +38,8 @@ if ($loggedin == 0) {
 
 echo ("logged in as " . $username);
 echo ("<br />\n");
-echo ("<a href='add.php'>[Add]</a>\n");
-echo ("<br />\n");
-echo ("<a href='plot.php'>[Plot]</a>\n");
-echo ("<br />\n");
-echo ("<a href='login.php?createuser=1'>[Create user]</a>\n");
-echo ("<form action='login.php'>\n");
-echo ("<input type='hidden' name='login' value='2' />\n");
-echo ("<input type='submit' value='logout' />\n");
-echo ("</form>\n");
+
+require ("footer.php");
 
 pfinish ();
 
