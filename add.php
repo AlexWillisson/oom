@@ -8,6 +8,7 @@ $addrow = 0 + @$_REQUEST['addrow'];
 $name = @$_REQUEST['name'];
 $value = 0 + @$_REQUEST['value'];
 $loggedin = 0 + @$_SESSION['loggedin'];
+$username = @$_SESSION['username'];
 
 if ($loggedin == 0) {
 	echo ("you are not logged in\n");
@@ -33,8 +34,9 @@ if ($addrow == 0) {
 	echo ("<input type='submit' value='Add' />\n");
 	echo ("</form>\n");	
 } else if ($addrow == 1) {
-	$stmt = sprintf ("insert into track (name, value, timestamp)"
-			 ." values ('%s', '%s', current_timestamp)", $name , $value);
+	$stmt = sprintf ("insert into track (name, value, owner, timestamp)"
+					 ." values ('%s', '%s', '%s', current_timestamp)",
+					 $name , $value, $username);
 
 	query ($stmt);
 

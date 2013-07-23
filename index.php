@@ -4,23 +4,16 @@ require ("common.php");
 
 pstart ();
 
-$createuser = 0 + @$_REQUEST['createduser'];
-$failedlogin = 0 + @$_REQUEST['failedlogin'];
 $loggedin = 0 + @$_SESSION['loggedin'];
 $username = @$_SESSION['username'];
 
-if ($failedlogin == 1) {
-	echo ("can't find user data\n"
-		  ."<br />");
-} else if ($failedlogin == 2) {
-	echo ("failed login\n"
-		  ."<br />");
-}
-
-if ($createduser == 1) {
-	echo ("successfully created user \n"
-		  ."<br />\n");
-}
+/* if ($failedlogin == 1) { */
+/* 	echo ("can't find user data\n" */
+/* 		  ."<br />"); */
+/* } else if ($failedlogin == 2) { */
+/* 	echo ("failed login\n" */
+/* 		  ."<br />"); */
+/* } */
 
 if ($loggedin == 0) {
 	echo ("you are not logged in\n");

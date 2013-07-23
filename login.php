@@ -8,6 +8,7 @@ $login = 0 + @$_REQUEST['login'];
 $username = @$_REQUEST['username'];
 $password = @$_REQUEST['password'];
 $createuser = @$_REQUEST['createuser'];
+$failedlogin = 0 + @$_REQUEST['failedlogin'];
 $loggedin = @$_SESSION['loggedin'];
 
 if ($login == 1) {
@@ -15,7 +16,7 @@ if ($login == 1) {
 			 $username);
 	$q = query ($stmt);
 	if (($r = fetch ($q)) == NULL) {
-		$t = "index.php?failedlogin=1";
+		$t = "login.php?failedlogin=1";
 		redirect ($t);
 	}
 
