@@ -4,7 +4,7 @@ require ("common.php");
 
 pstart ();
 
-$addrow = 0 + @$_REQUEST['addrow'];
+$add = 0 + @$_REQUEST['add'];
 $name = @$_REQUEST['name'];
 $value = 0 + @$_REQUEST['value'];
 $loggedin = 0 + @$_SESSION['loggedin'];
@@ -24,21 +24,35 @@ if ($loggedin == 0) {
 	pfinish ();
 }
 
-if ($addrow == 0) {
+if ($add == 0) {
 	echo ("<form action='add.php'>\n");
 	echo ("<input name='name' size='40' />\n");
 	echo ("<br />");
 	echo ("<input name='value' size='40' />\n");
 	echo ("<br />");
-	echo ("<input type='hidden' name='addrow' value='1' />\n");
+	echo ("<input type='hidden' name='add' value='1' />\n");
 	echo ("<input type='submit' value='Add' />\n");
 	echo ("</form>\n");	
-} else if ($addrow == 1) {
-	$stmt = sprintf ("insert into track (name, value, owner, timestamp)"
-					 ." values ('%s', '%s', '%s', current_timestamp)",
-					 $name , $value, $username);
+} else if ($add == 1) {
+	$stmt = sprintf ("select * from track where date_trunc('day',"
+					 ." timestamp) = date_trunc ('day', current_timestamp)"
+					 ." and name='%s';", $name);
 
-	query ($stmt);
+	$q = query ($stmt);
+
+	if (($r = fetch ($q)) == NULL) {
+		$stmt = sprintf ("insert into track (name, value, owner, timestamp)"
+						 ." values ('%s', '%s', '%s', current_timestamp)",
+						 $name , $value, $username);
+
+		query ($stmt);
+	} else {
+		$stmt = sprintf ("update track set value = value + %s where"
+						 ." date_trunc('day', timestamp) = date_trunc ('day',"
+						 ." current_timestamp) and name='%s';", $value, $name);
+
+		query ($stmt);
+	}
 
 	$t = "index.php";
 	redirect ($t);

@@ -55,7 +55,13 @@ while (($r = fetch ($q)) != NULL) {
 }
 
 echo ("\n");
-echo ("$.plot('#placeholder', [d1], { xaxis: { mode: 'time' } });\n");
+echo ("$.plot('#placeholder', [\n");
+echo ("{\n");
+echo ("data: d1,\n");
+echo ("lines: { show: true },\n");
+echo ("points: { show: true }\n");
+echo ("}],\n");
+echo ("{ xaxis: { mode: 'time' } });\n");
 echo ("		});\n");
 echo ("\n");
 echo ("</script>\n");
