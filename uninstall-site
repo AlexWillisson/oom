@@ -4,5 +4,5 @@ FILES=`cat FILES`
 
 for f in $FILES
 do
-    ln -sf `pwd`/$f /var/www/tracking/$f
+    rm -f /var/www/tracking/$f
 done
