@@ -35,21 +35,23 @@ if ($add == 0) {
 	echo ("</form>\n");	
 } else if ($add == 1) {
 	$stmt = sprintf ("select * from track where date_trunc('day',"
-					 ." timestamp) = date_trunc ('day', current_timestamp)"
-					 ." and name='%s';", $name);
+			 ." timestamp) = date_trunc ('day', current_timestamp)"
+			 ." and name='%s';", $name);
 
 	$q = query ($stmt);
 
 	if (($r = fetch ($q)) == NULL) {
-		$stmt = sprintf ("insert into track (name, value, owner, timestamp)"
-						 ." values ('%s', '%s', '%s', current_timestamp)",
-						 $name , $value, $username);
+		$stmt = sprintf ("insert into track (name, value, owner,"
+				 ." timestamp) values ('%s', '%s', '%s',"
+				 ." current_timestamp)",
+				 $name , $value, $username);
 
 		query ($stmt);
 	} else {
 		$stmt = sprintf ("update track set value = value + %s where"
-						 ." date_trunc('day', timestamp) = date_trunc ('day',"
-						 ." current_timestamp) and name='%s';", $value, $name);
+				 ." date_trunc('day', timestamp)"
+				 ." = date_trunc ('day', current_timestamp)"
+				 ." and name='%s';", $value, $name);
 
 		query ($stmt);
 	}
