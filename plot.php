@@ -51,7 +51,7 @@ $stmt = sprintf ("select value, extract('epoch' from timestamp) as timestamp fro
 $q = query ($stmt);
 
 while (($r = fetch ($q)) != NULL) {
-	echo ("d1.push(['".$r->timestamp."', ".$r->value."]);\n");
+	echo ("d1.push([".$r->timestamp."*1000, ".$r->value."]);\n");
 }
 
 echo ("\n");
@@ -66,6 +66,8 @@ echo ("<form action='plot.php'>\n");
 echo ("<input name='tracked' size='40' />\n");
 echo ("<input type='submit' value='Plot' />\n");
 echo ("</form>\n");
+
+echo ("<h2>".$tracked."</h2>\n");
 
 echo ("	<div id='content'>\n");
 echo ("	<div class='main-container'>\n");
