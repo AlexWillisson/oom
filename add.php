@@ -41,11 +41,20 @@ if ($add == 0) {
 	$q = query ($stmt);
 
 	if (($r = fetch ($q)) == NULL) {
-		$stmt = sprintf ("insert into track (name, value, owner,"
-				 ." timestamp) values ('%s', '%s', '%s',"
-				 ." current_timestamp)",
-				 $name , $value, $username);
-
+		$stmt = sprintf ("select * from trackers where name='%s'", $name);
+		$q = query ($stmt);
+		if (($r = fetch ($q)) == NULL) {
+			$stmt = sprintf ("insert into track (name, value, owner,"
+							 ." timestamp) values ('%s', '%s', '%s',"
+							 ." current_timestamp)",
+							 $name , $value, $username);
+		} else {
+			$stmt = sprintf ("insert into track (name, value, owner,"
+							 ." timestamp) values ('%s', '%s', '%s',"
+							 ." date_trunc ('%s', current_timestamp))",
+							 $name , $value, $username, $r->resolution);
+		}
+		
 		query ($stmt);
 	} else {
 		$stmt = sprintf ("update track set value = value + %s where"
