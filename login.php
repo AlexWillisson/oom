@@ -40,10 +40,10 @@ if ($login == 1) {
 }
 
 if ($createuser == 1) {
-	echo ("<form action='login.php'>\n");
+	echo ("<form action='login.php' method='post'>\n");
 	echo ("<input name='username' size='40' />\n");
 	echo ("<br />");
-	echo ("<input name='password' size='40' />\n");
+	echo ("<input type='password' name='password' size='40' />\n");
 	echo ("<br />");
 	echo ("<input type='hidden' name='createuser' value='2' />\n");
 	echo ("<input type='submit' value='Create' />\n");
