@@ -23,3 +23,24 @@ td.source {
 th.source {
     min-width: 2em;
 }
+
+div.source-name {
+    float: left;
+    padding-right: .2em;
+}
+
+div.source-checkbox {
+    float: left;
+}
+
+div.source-area {
+    float: left;
+    border: 1px solid black;
+    margin-left: .1em;
+    margin-right: .1em;
+    padding: .2em;
+}
+
+div.songs-area {
+    padding-top: 1em;
+}

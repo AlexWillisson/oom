@@ -1,11 +1,5 @@
 <?php
 
-require ("common.php");
-
-pstart ();
-
-require ("header.php");
-
 function fetch_sources () {
 	$cols = array ("source_id", "name");
 	$stmt = sprintf ("select %s from sources", implode (", ", $cols));
@@ -21,6 +15,12 @@ function fetch_sources () {
 
 	return ($sources);
 }
+
+require ("common.php");
+
+pstart ();
+
+require ("header.php");
 
 $columns = array ("artist", "album", "name", "sources");
 $stmt = sprintf ("select %s from songs", implode (", ", $columns));
@@ -52,8 +52,8 @@ while (($r = fetch ($q)) != NULL) {
 	$body .= sprintf ("<td>%s</td>\n", $res['name']);
 
 	$js = json_decode ($res['sources']);
-	for ($idx = 0; $idx < count ($source_map); $idx++) {
-		if (isset ($js[$idx])) {
+	foreach (array_keys ($source_map) as $source) {
+		if (in_array ($source, $js)) {
 			$body .= sprintf ("<td class='source'>y</td>\n");
 		} else {
 			$body .= sprintf ("<td class='source'>n</td>\n");

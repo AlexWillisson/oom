@@ -6,22 +6,9 @@ require ("DB.php");
 
 session_start ();
 
-function h2($s) {
-  $s = htmlentities ($s);
-  $len = strlen ($s);
-  $ret = "";
-
-  for ($i = 0; $i < $len; $i++) {
-    $ret .= $s[$i];
-    $ret .= " ";
-  }
-  return ($ret);
-}
-
 function h($val) {
 	return (htmlentities ($val, ENT_QUOTES, 'UTF-8'));
 }
-
 function redirect ($t) {
 	ob_clean ();
 	do_commit ();
@@ -155,22 +142,6 @@ function query_db ($db, $stmt, $arr = NULL) {
 
 		$q = $db->prepare ($stmt);
 		$q->execute ($arr);
-	}
-
-	$ignored_queries = array ("select", "end");
-
-	$log_query = true;
-	for ($idx = 0; $idx < count ($ignored_queries); $idx++) {
-		$cleaned = substr (strtolower (trim ($stmt)),
-                           0, strlen ($ignored_queries[$idx]));
-		if (strcmp ($cleaned, $ignored_queries[$idx]) == 0) {
-			$log_query = false;
-			break;
-		}
-	}
-
-	if ($log_query) {
-		audit_stmt_log ($stmt, $arr, $q);
 	}
 
 	return ($q);
