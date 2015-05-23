@@ -39,6 +39,12 @@ if ($login == 1) {
 	redirect ($t);
 }
 
+if ($loggedin == 0) {
+	echo ("not logged in\n");
+
+	pfinish ();
+}
+
 if ($createuser == 1) {
 	echo ("<form action='login.php' method='post'>\n");
 	echo ("<input name='username' size='40' />\n");
@@ -73,5 +79,3 @@ if ($createuser == 1) {
 }
 
 pfinish ();
-
-?>

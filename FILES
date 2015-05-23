@@ -3,3 +3,8 @@ common.php
 index.php
 login.php
 api.php
+header.php
+list.php
+jquery-1.11.1.js
+colors.css
+style.css

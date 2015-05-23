@@ -4,5 +4,5 @@ FILES=`cat FILES`
 
 for f in $FILES
 do
-    cp -f `pwd`/$f /var/www/html/oom/$f
+    ln -sf `pwd`/$f /var/www/html/oom/$f
 done

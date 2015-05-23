@@ -1,0 +1,25 @@
+table, td, th {
+    border-collapse: collapse;
+    border: 1px solid black;
+    padding: .25em;
+}
+
+th.artist {
+    width: 15em;
+}
+
+th.album {
+    width: 20em;
+}
+
+th.song {
+    width: 25em;
+}
+
+td.source {
+    text-align: center;
+}
+
+th.source {
+    min-width: 2em;
+}

@@ -9,6 +9,7 @@ $name = @$_REQUEST['name'];
 $value = 0 + @$_REQUEST['value'];
 $username = @$_REQUEST['username'];
 $password = @$_REQUEST['password'];
+$loggedin = 0 + @$_SESSION['loggedin'];
 
 $stmt = sprintf ("select hash, salt from users where username='%s'",
 		 $username);
@@ -23,6 +24,12 @@ $hash = md5 ($password);
 
 if ($hash != $r->hash) {
 	echo ("invalid authentication\n");
+
+	pfinish ();
+}
+
+if ($loggedin <= 0) {
+	echo ("not logged in\n");
 
 	pfinish ();
 }
@@ -60,4 +67,3 @@ if ($type == "add") {
 
 pfinish ();
 
-?>
