@@ -1,8 +1,0 @@
-#! /bin/sh
-
-FILES=`cat FILES`
-
-for f in $FILES
-do
-    rm -f /var/www/tracking/$f
-done
