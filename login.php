@@ -12,18 +12,20 @@ $failedlogin = 0 + @$_REQUEST['failedlogin'];
 $loggedin = @$_SESSION['loggedin'];
 
 if ($login == 1) {
-	$stmt = sprintf ("select hash, salt from users where username='%s'",
-			 $username);
+	$cols = array ("hash", "salt");
+	$stmt = sprintf ("select %s from users where name='%s'",
+			 implode (", ", $cols), $username);
 	$q = query ($stmt);
 	if (($r = fetch ($q)) == NULL) {
 		$t = "login.php?failedlogin=1";
 		redirect ($t);
 	}
+	$res = parse_results ($cols, $r);
 
-	$password = $password . $r->salt;
+	$password = $password . $res['salt'];
 	$hash = md5 ($password);
 
-	if ($hash == $r->hash) {
+	if ($hash == $res['hash']) {
 		$_SESSION['loggedin'] = 1;
 		$_SESSION['username'] = $username;
 		$t = "index.php";
