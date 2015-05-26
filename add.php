@@ -71,22 +71,57 @@ if ($add == 0) {
 	$js_sources = json_encode ($sources_checked);
 
 	$songs = array ();
+	$errors = array ();
+	$dups = array ();
 	for ($idx = 0; $idx < count ($lines); $idx++) {
+		$found_dup = false;
+
 		if (strlen ($lines[$idx]) <= 0) {
 			continue;
 		}
 
 		$tokens = explode (",", $lines[$idx]);
 
+		if (count ($tokens) != 3) {
+			$errors[] = $lines[$idx];
+			continue;
+		}
+
 		$song = trim ($tokens[0]);
 		$album = trim ($tokens[1]);
 		$artist = trim ($tokens[2]);
 
-		$stmt = "insert into songs (name, album, artist, sources)"
-			." values (?, ?, ?, ?)";
-		$args = array ($song, $album, $artist, $js_sources);
+		$fuzz_song = metaphone (preg_replace ('/&/', 'and', $song));
+		$fuzz_album = metaphone (preg_replace ('/&/', 'and', $album));
+		$fuzz_artist = metaphone (preg_replace ('/&/', 'and', $artist));
 
-		query ($stmt, $args);
+		$q = query ("select song_id from songs"
+			    ." where fuzzy_name=? and fuzzy_artist=?",
+			    array ($fuzz_song, $fuzz_artist));
+
+		while (($r = fetch ($q)) != NULL) {
+			$found_dup = true;
+			if ( ! isset ($dups[$lines[$idx]])) {
+				$dups[$lines[$idx]] = array ();
+			}
+			$dups[$lines[$idx]][] = $r[0];
+		}
+
+		if ( ! $found_dup) {
+			$stmt = "insert into songs (name, album, artist,"
+				."                  sources, fuzzy_name,"
+				."                  fuzzy_album, fuzzy_artist)"
+				." values (?, ?, ?, ?, ?, ?, ?)";
+			$args = array ($song, $album, $artist, $js_sources,
+				       $fuzz_song, $fuzz_album, $fuzz_artist);
+
+			query ($stmt, $args);
+		}
+	}
+
+	if (count ($dups) > 0) {
+		var_dump ($dups);
+		pfinish ();
 	}
 
 	$t = "list.php";
