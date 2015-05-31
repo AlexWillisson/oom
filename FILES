@@ -5,6 +5,10 @@ login.php
 api.php
 header.php
 list.php
-jquery-1.11.1.js
+jquery-2.1.4.js
 colors.css
 style.css
+mousedown.html
+mousedown.js
+mousedown.css
+jcanvas.js
