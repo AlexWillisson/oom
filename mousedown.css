@@ -14,5 +14,9 @@ div.new-song {
 }
 
 div.end-song {
-    margin-top: 5em
+    float: left;
+}
+
+div.end-song-padding {
+    margin-top: 5em;
 }

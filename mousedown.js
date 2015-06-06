@@ -128,7 +128,7 @@ function makeid (len) {
     var text = "";
     var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (idx = 0; idx < len; idx++ ) {
+    for (var idx = 0; idx < len; idx++ ) {
         text += possible.charAt (Math.floor (Math.random () * possible.length));
     }
 
@@ -148,8 +148,6 @@ last_mousedown = {};
 last_mouseup = {};
 
 $("body").mousedown (function (event) {
-    console.log ("x: " + event.pageX);
-    console.log ("y: " + event.pageY);
     last_mousedown.x = event.pageX - canvas_pos.left;
     last_mousedown.y = event.pageY - canvas_pos.top;
     rm_line ("dragged");
@@ -180,11 +178,6 @@ $("body").mouseup (function (event) {
 
 setTimeout (draw, 30);
 
-end_song_entry = $(".end-song");
-end_song_pos = end_song_entry.offset ();
-y_end = end_song_pos.top + (parseInt (end_song_entry.css ("height")) / 2)
-    - canvas_pos.top;
-
 new_songs = $(".new-song");
 for (idx = 0; idx < new_songs.length; idx++) {
     new_song_entry = $(new_songs[idx]);
@@ -192,9 +185,15 @@ for (idx = 0; idx < new_songs.length; idx++) {
     y_start = new_song_pos.top + (parseInt (new_song_entry.css ("height")) / 2)
 	- canvas_pos.top;
 
-    canvas_objs.push ({"obj_id": "link1",
-		       "startx": 25,
-		       "starty": y_start,
-		       "endx": parseInt (canvas.css ("width")) - 25,
-		       "endy": y_end});
+    jdx = new_song_entry.data ("song-idx");
+    end_song_entry = $("#song-" + jdx);
+    end_song_pos = end_song_entry.offset ();
+    y_end = end_song_pos.top + (parseInt (end_song_entry.css ("height")) / 2)
+	- canvas_pos.top;
+
+    canvas_objs.push ({"obj_id": makeid (5),
+    		       "startx": 25,
+    		       "starty": y_start,
+    		       "endx": parseInt (canvas.css ("width")) - 25,
+    		       "endy": y_end});
 }
