@@ -135,20 +135,6 @@ function makeid (len) {
     return text;
 }
 
-canvas_objs = []
-
-canvas = $("#lines");
-
-canvas.css ("height", $("#new-songs-body").css ("height"));
-
-canvas.resizeCanvas (parseInt (canvas.css ("width")),
-		     parseInt (canvas.css ("height")));
-
-canvas_pos = canvas.offset ();
-
-last_mousedown = {};
-last_mouseup = {};
-
 $("body").mousedown (function (event) {
     last_mousedown.x = event.pageX - canvas_pos.left;
     last_mousedown.y = event.pageY - canvas_pos.top;
@@ -178,51 +164,73 @@ $("body").mouseup (function (event) {
     last_mouseup.y = event.pageY - canvas_pos.top;
 });
 
-setTimeout (draw, 30);
+var canvas_objs, canvas, canvas_pos, last_mousedown, last_mouseup;
+    
+function init_page (event) {
+    canvas_objs = []
 
-end_songs = $(".end-song");
-for (idx = 0; idx < end_songs.length; idx++) {
-    end_song_entry = $(end_songs[idx]);
-    song_idx = end_song_entry.data ("song-idx");
+    canvas = $("#lines");
 
-    group_top = Infinity;
-    group_bottom = -Infinity;
+    canvas.css ("height", $("#new-songs-body").css ("height"));
 
-    matched_songs = $("div.new-song-" + song_idx);
-    for (jdx = 0; jdx < matched_songs.length; jdx++) {
-	song = $(matched_songs[jdx]);
+    canvas.resizeCanvas (parseInt (canvas.css ("width")),
+			 parseInt (canvas.css ("height")));
 
-	coords = song.offset ();
+    canvas_pos = canvas.offset ();
 
-	group_top = min (coords.top, group_top);
-	group_bottom = max (coords.top + parseInt (song.css ("height")),
-			    group_bottom);
+    last_mousedown = {};
+    last_mouseup = {};
+
+    setTimeout (draw, 30);
+
+    end_songs = $(".end-song");
+    for (idx = 0; idx < end_songs.length; idx++) {
+	end_song_entry = $(end_songs[idx]);
+	song_idx = end_song_entry.data ("song-idx");
+
+	group_top = Infinity;
+	group_bottom = -Infinity;
+
+	matched_songs = $("div.new-song-" + song_idx);
+	for (jdx = 0; jdx < matched_songs.length; jdx++) {
+	    song = $(matched_songs[jdx]);
+
+	    coords = song.offset ();
+
+	    group_top = min (coords.top, group_top);
+	    group_bottom = max (coords.top + parseInt (song.css ("height")),
+				group_bottom);
+	}
+
+	midpoint = (group_top + group_bottom) / 2
+
+	mid_top = midpoint - parseInt (end_song_entry.css ("height")) / 2;
+	mid_left = end_song_entry.offset().left;
+
+	end_song_entry.offset ({"top": mid_top, "left": mid_left});
     }
 
-    midpoint = (group_top + group_bottom) / 2
+    new_songs = $(".new-song");
+    for (idx = 0; idx < new_songs.length; idx++) {
+	new_song_entry = $(new_songs[idx]);
+	new_song_pos = new_song_entry.offset ();
+	new_song_height = parseInt (new_song_entry.css ("height"));
+	y_start = new_song_pos.top + (new_song_height / 2) - canvas_pos.top;
 
-    mid_top = midpoint - parseInt (end_song_entry.css ("height")) / 2;
-    mid_left = end_song_entry.offset().left;
+	jdx = new_song_entry.data ("song-idx");
+	end_song_entry = $("#song-" + jdx);
+	end_song_pos = end_song_entry.offset ();
+	end_song_height = parseInt (end_song_entry.css ("height"));
+	y_end = end_song_pos.top + (end_song_height / 2) - canvas_pos.top;
 
-    end_song_entry.offset ({"top": mid_top, "left": mid_left});
+	canvas_objs.push ({"obj_id": makeid (5),
+    			   "startx": 25,
+    			   "starty": y_start,
+    			   "endx": parseInt (canvas.css ("width")) - 25,
+    			   "endy": y_end});
+    }
 }
 
-new_songs = $(".new-song");
-for (idx = 0; idx < new_songs.length; idx++) {
-    new_song_entry = $(new_songs[idx]);
-    new_song_pos = new_song_entry.offset ();
-    y_start = new_song_pos.top + (parseInt (new_song_entry.css ("height")) / 2)
-	- canvas_pos.top;
+init_page (null);
 
-    jdx = new_song_entry.data ("song-idx");
-    end_song_entry = $("#song-" + jdx);
-    end_song_pos = end_song_entry.offset ();
-    y_end = end_song_pos.top + (parseInt (end_song_entry.css ("height")) / 2)
-	- canvas_pos.top;
-
-    canvas_objs.push ({"obj_id": makeid (5),
-    		       "startx": 25,
-    		       "starty": y_start,
-    		       "endx": parseInt (canvas.css ("width")) - 25,
-    		       "endy": y_end});
-}
+window.onresize = init_page;
