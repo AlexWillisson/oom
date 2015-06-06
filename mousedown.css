@@ -2,8 +2,17 @@ table, td {
     border: thin solid black;
 }
 
-#foobar {
+#lines {
     width: 100%;
     height: 100%;
-    border: thin solid black;
+}
+
+div.new-song {
+    margin-left: 35%;
+    margin-top: 5em;
+    float: right;
+}
+
+div.end-song {
+    margin-top: 5em
 }

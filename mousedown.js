@@ -108,7 +108,7 @@ function draw () {
 			      strokeWidth: 1,
 			      x1: startx, y1: starty,
 			      x2: endx, y2: endy});
-	} else if (obj_id == "link1") {
+	} else {
 	    if (line_intersect (canvas_objs[idx], dragged)) {
 		canvas.drawLine ({strokeStyle: "#f00",
 				  strokeWidth: 1,
@@ -137,17 +137,19 @@ function makeid (len) {
 
 canvas_objs = []
 
-canvas = $("#foobar");
+canvas = $("#lines");
 
 canvas.resizeCanvas (parseInt (canvas.css ("width")),
 		     parseInt (canvas.css ("height")));
 
-canvas_pos = canvas.position ();
+canvas_pos = canvas.offset ();
 
 last_mousedown = {};
 last_mouseup = {};
 
 $("body").mousedown (function (event) {
+    console.log ("x: " + event.pageX);
+    console.log ("y: " + event.pageY);
     last_mousedown.x = event.pageX - canvas_pos.left;
     last_mousedown.y = event.pageY - canvas_pos.top;
     rm_line ("dragged");
@@ -178,8 +180,21 @@ $("body").mouseup (function (event) {
 
 setTimeout (draw, 30);
 
-canvas_objs.push ({"obj_id": "link1",
-		   "startx": 100,
-		   "starty": 100,
-		   "endx": 400,
-		   "endy": 100});
+end_song_entry = $(".end-song");
+end_song_pos = end_song_entry.offset ();
+y_end = end_song_pos.top + (parseInt (end_song_entry.css ("height")) / 2)
+    - canvas_pos.top;
+
+new_songs = $(".new-song");
+for (idx = 0; idx < new_songs.length; idx++) {
+    new_song_entry = $(new_songs[idx]);
+    new_song_pos = new_song_entry.offset ();
+    y_start = new_song_pos.top + (parseInt (new_song_entry.css ("height")) / 2)
+	- canvas_pos.top;
+
+    canvas_objs.push ({"obj_id": "link1",
+		       "startx": 25,
+		       "starty": y_start,
+		       "endx": parseInt (canvas.css ("width")) - 25,
+		       "endy": y_end});
+}
