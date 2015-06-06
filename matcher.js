@@ -139,6 +139,8 @@ canvas_objs = []
 
 canvas = $("#lines");
 
+canvas.css ("height", $("#new-songs-body").css ("height"));
+
 canvas.resizeCanvas (parseInt (canvas.css ("width")),
 		     parseInt (canvas.css ("height")));
 
@@ -177,6 +179,33 @@ $("body").mouseup (function (event) {
 });
 
 setTimeout (draw, 30);
+
+end_songs = $(".end-song");
+for (idx = 0; idx < end_songs.length; idx++) {
+    end_song_entry = $(end_songs[idx]);
+    song_idx = end_song_entry.data ("song-idx");
+
+    group_top = Infinity;
+    group_bottom = -Infinity;
+
+    matched_songs = $("div.new-song-" + song_idx);
+    for (jdx = 0; jdx < matched_songs.length; jdx++) {
+	song = $(matched_songs[jdx]);
+
+	coords = song.offset ();
+
+	group_top = min (coords.top, group_top);
+	group_bottom = max (coords.top + parseInt (song.css ("height")),
+			    group_bottom);
+    }
+
+    midpoint = (group_top + group_bottom) / 2
+
+    mid_top = midpoint - parseInt (end_song_entry.css ("height")) / 2;
+    mid_left = end_song_entry.offset().left;
+
+    end_song_entry.offset ({"top": mid_top, "left": mid_left});
+}
 
 new_songs = $(".new-song");
 for (idx = 0; idx < new_songs.length; idx++) {

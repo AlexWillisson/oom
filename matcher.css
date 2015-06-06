@@ -11,10 +11,21 @@ div.new-song {
     margin-left: 35%;
     margin-top: 5em;
     float: right;
+    width: 100%;
+}
+
+div.new-song table {
+    width: 100%;
 }
 
 div.end-song {
     float: left;
+    /* margin-bottom: 10em; */
+    width: 100%;
+}
+
+div.end-song table {
+    width: 100%;
 }
 
 div.end-song-padding {

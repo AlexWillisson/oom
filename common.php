@@ -18,6 +18,7 @@ function redirect ($t) {
 
 $pstart_args = (object) null;
 $pstart_args->css = array ();
+$pstart_args->js = array ();
 
 function pstart () {
 	global $pstart_args;
@@ -42,6 +43,11 @@ function pstart () {
 		$s = sprintf ("<link rel='stylesheet'"
                       ." type='text/css' href='%s' />\n",
                       $pstart_args->css[$idx]);
+		echo ($s);
+	}
+	for ($idx = 0; $idx < count ($pstart_args->js); $idx++) {
+		$s = sprintf ("<script src='%s'></script>\n",
+			      $pstart_args->js[$idx]);
 		echo ($s);
 	}
 	echo ("</head>\n");
