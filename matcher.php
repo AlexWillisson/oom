@@ -1,5 +1,21 @@
 <?php
 
+function fetch_sources () {
+	$cols = array ("source_id", "name");
+	$stmt = sprintf ("select %s from sources", implode (", ", $cols));
+	$q = query ($stmt);
+
+	$sources = array ();
+
+	while (($r = fetch ($q)) != NULL) {
+		$res = parse_results ($cols, $r);
+
+		$sources[$res['source_id']] = $res['name'];
+	}
+
+	return ($sources);
+}
+
 require ("common.php");
 
 $pstart_args->js[] = "/oom/jquery-2.1.4.js";
@@ -13,6 +29,9 @@ pstart ();
 
 require ("header.php");
 
+$source_map = fetch_sources ();
+$sources = array_map (function ($s) { return ($s); }, $source_map);
+
 $new_songs = array ();
 $existing_songs = array ();
 
@@ -20,6 +39,7 @@ $song = (object) NULL;
 $song->name = "Chrono Trigger Theme";
 $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
+$song->sources = array (3);
 $song->match_idx = 0;
 
 $new_songs[] = $song;
@@ -28,6 +48,7 @@ $song = (object) NULL;
 $song->name = "chrono trigger theme";
 $song->album = "gaming fantasy";
 $song->artist = "taylor davis";
+$song->sources = array (3);
 $song->match_idx = 0;
 
 $new_songs[] = $song;
@@ -36,6 +57,7 @@ $song = (object) NULL;
 $song->name = "Chrono Trigger Theme";
 $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
+$song->sources = array (4);
 $song->match_idx = 0;
 
 $existing_songs[] = $song;
@@ -44,6 +66,7 @@ $song = (object) NULL;
 $song->name = "Zelda Medley";
 $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
+$song->sources = array (3);
 $song->match_idx = 1;
 
 $new_songs[] = $song;
@@ -52,6 +75,7 @@ $song = (object) NULL;
 $song->name = "zelda medley";
 $song->album = "gaming fantasy";
 $song->artist = "taylor davis";
+$song->sources = array (3);
 $song->match_idx = 1;
 
 $new_songs[] = $song;
@@ -60,79 +84,8 @@ $song = (object) NULL;
 $song->name = "Zelda Medley";
 $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
+$song->sources = array (4);
 $song->match_idx = 1;
-
-$existing_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 2;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "zelda medley";
-$song->album = "gaming fantasy";
-$song->artist = "taylor davis";
-$song->match_idx = 2;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 2;
-
-$existing_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 3;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "zelda medley";
-$song->album = "gaming fantasy";
-$song->artist = "taylor davis";
-$song->match_idx = 3;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 3;
-
-$existing_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 4;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "zelda medley";
-$song->album = "gaming fantasy";
-$song->artist = "taylor davis";
-$song->match_idx = 4;
-
-$new_songs[] = $song;
-
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->match_idx = 4;
 
 $existing_songs[] = $song;
 
@@ -154,9 +107,28 @@ for ($idx = 0; $idx < count ($new_songs); $idx++) {
 			  h($song->match_idx));
 	$body .= "<table>\n";
 	$body .= "<tr>\n";
+	$body .= "<th class='artist'>Artist</th>\n";
+	$body .= "<th class='album'>Album</th>\n";
+	$body .= "<th class='song'>Song</th>\n";
+	foreach ($sources as $s) {
+		$body .= "<th class='source'>\n";
+		$body .= $s;
+		$body .= "</th>\n";
+	}
+	$body .= "</tr>\n";
+	$body .= "<tr>\n";
 	$body .= sprintf ("<td>%s</td>\n", h($song->name));
 	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
 	$body .= sprintf ("<td>%s</td>\n", h($song->album));
+
+	foreach (array_keys ($source_map) as $source) {
+		if (in_array ($source, $song->sources)) {
+			$body .= sprintf ("<td class='source'>y</td>\n");
+		} else {
+			$body .= sprintf ("<td class='source'>n</td>\n");
+		}
+	}
+
 	$body .= "</tr>\n";
 	$body .= "</table>\n";
 	$body .= "</div>\n";
@@ -186,9 +158,28 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 			  h($song->match_idx), h($song->match_idx));
 	$body .= "<table>\n";
 	$body .= "<tr>\n";
+	$body .= "<th class='artist'>Artist</th>\n";
+	$body .= "<th class='album'>Album</th>\n";
+	$body .= "<th class='song'>Song</th>\n";
+	foreach ($sources as $s) {
+		$body .= "<th class='source'>\n";
+		$body .= $s;
+		$body .= "</th>\n";
+	}
+	$body .= "</tr>\n";
+	$body .= "<tr>\n";
 	$body .= sprintf ("<td>%s</td>\n", h($song->name));
 	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
 	$body .= sprintf ("<td>%s</td>\n", h($song->album));
+
+	foreach (array_keys ($source_map) as $source) {
+		if (in_array ($source, $song->sources)) {
+			$body .= sprintf ("<td class='source'>y</td>\n");
+		} else {
+			$body .= sprintf ("<td class='source'>n</td>\n");
+		}
+	}
+
 	$body .= "</tr>\n";
 	$body .= "</table>\n";
 	$body .= "</div>\n";
