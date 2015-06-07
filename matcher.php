@@ -40,7 +40,9 @@ function add_sources ($song) {
 }
 
 function fix_id ($id) {
-	return (h(preg_replace ("/[^a-zA-Z0-9]/", "-", $id)));
+	$cleared = preg_replace ("/[^a-zA-Z0-9\s]/", "", $id);
+
+	return (h(preg_replace ("/[\s]/", "-", $cleared)));
 }
 
 require ("common.php");
@@ -144,9 +146,9 @@ for ($idx = 0; $idx < count ($new_songs); $idx++) {
 			  h($song->match_idx));
 	$body .= "<table>\n";
 	$body .= "<tr>\n";
-	$body .= "<th class='artist'>Artist</th>\n";
-	$body .= "<th class='album'>Album</th>\n";
 	$body .= "<th class='song'>Song</th>\n";
+	$body .= "<th class='album'>Album</th>\n";
+	$body .= "<th class='artist'>Artist</th>\n";
 	foreach ($sources as $s) {
 		$body .= "<th class='source'>\n";
 		$body .= $s;
@@ -154,9 +156,15 @@ for ($idx = 0; $idx < count ($new_songs); $idx++) {
 	}
 	$body .= "</tr>\n";
 	$body .= "<tr>\n";
-	$body .= sprintf ("<td>%s</td>\n", h($song->name));
-	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
-	$body .= sprintf ("<td>%s</td>\n", h($song->album));
+	$body .= sprintf ("<td class='song-fields'"
+			  ." data-field='name'>%s</td>\n",
+			  h($song->name));
+	$body .= sprintf ("<td class='song-fields'"
+			  ." data-field='album'>%s</td>\n",
+			  h($song->album));
+	$body .= sprintf ("<td class='song-fields'"
+			  ." data-field='artist'>%s</td>\n",
+			  h($song->artist));
 
 	foreach (array_keys ($source_map) as $source) {
 		if (in_array ($source, $song->sources)) {
@@ -195,9 +203,9 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 			  h($song->match_idx), h($song->match_idx));
 	$body .= "<table>\n";
 	$body .= "<tr>\n";
-	$body .= "<th class='artist'>Artist</th>\n";
-	$body .= "<th class='album'>Album</th>\n";
 	$body .= "<th class='song'>Song</th>\n";
+	$body .= "<th class='album'>Album</th>\n";
+	$body .= "<th class='artist'>Artist</th>\n";
 	foreach ($sources as $s) {
 		$body .= "<th class='source'>\n";
 		$body .= $s;
@@ -205,18 +213,27 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 	}
 	$body .= "</tr>\n";
 	$body .= "<tr>\n";
-	$body .= sprintf ("<td>%s</td>\n", h($song->name));
+	$body .= sprintf ("<td class='song-fields' id='name-%d'"
+			  ." data-startval='%s'>%s</td>\n",
+			  $song->match_idx, h($song->name), h($song->name));
 	$body .= sprintf ("<input type='hidden' name='name-%d'"
-			  ." value='%s' />\n",
-			  h($song->match_idx), h($song->name));
-	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
-	$body .= sprintf ("<input type='hidden' name='artist-%d'"
-			  ." value='%s' />\n",
-			  h($song->match_idx), h($song->artist));
-	$body .= sprintf ("<td>%s</td>\n", h($song->album));
+			  ." value='%s' id='input-name-%d' />\n",
+			  h($song->match_idx), h($song->name),
+			  h($song->match_idx));
+	$body .= sprintf ("<td class='song-fields' id='album-%d'"
+			  ." data-startval='%s'>%s</td>\n",
+			  $song->match_idx, h($song->album), h($song->album));
 	$body .= sprintf ("<input type='hidden' name='album-%d'"
-			  ." value='%s'/ >\n",
-			  h($song->match_idx), h($song->album));
+			  ." value='%s' id='input-album-%d' />\n",
+			  h($song->match_idx), h($song->album),
+			  h($song->match_idx));
+	$body .= sprintf ("<td class='song-fields' id='artist-%d'"
+			  ." data-startval='%s'>%s</td>\n",
+			  $song->match_idx, h($song->artist), h($song->artist));
+	$body .= sprintf ("<input type='hidden' name='artist-%d'"
+			  ." value='%s' id='input-artist-%d' />\n",
+			  h($song->match_idx), h($song->artist),
+			  h($song->match_idx));
 
 	$all_sources = $song_sources[$song->match_idx];
 

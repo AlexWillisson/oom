@@ -2,11 +2,11 @@
     $.fn.extend({  
         //Let the user resize the canvas to the size he/she wants  
         resizeCanvas:  function(w, h) {  
-            var c = $(this)[0]  
+            c = $(this)[0];
             c.width = w;  
-            c.height = h  
+            c.height = h;
         }  
-    })  
+    })
 })(jQuery)
 
 function rm_line (obj_id) {
@@ -136,8 +136,8 @@ function makeid (len) {
 }
 
 $("body").mousedown (function (event) {
-    last_mousedown.x = event.pageX - canvas_pos.left;
-    last_mousedown.y = event.pageY - canvas_pos.top;
+    last_mousedown.x = event.pageX - canvas_pos.left + 6;
+    last_mousedown.y = event.pageY - canvas_pos.top - 1;
     rm_line ("dragged");
     canvas_objs.push ({"obj_id": "dragged",
 		       "startx": last_mousedown.x,
@@ -152,16 +152,16 @@ $("body").mousemove (function (event) {
 	canvas_objs.push ({"obj_id": "dragged",
 			   "startx": last_mousedown.x,
 			   "starty": last_mousedown.y,
-			   "endx": event.pageX - canvas_pos.left,
-			   "endy": event.pageY - canvas_pos.top});
+			   "endx": event.pageX - canvas_pos.left + 6,
+			   "endy": event.pageY - canvas_pos.top - 1});
     }
 });
 
 $("body").mouseup (function (event) {
     rm_line ("dragged");
 
-    last_mouseup.x = event.pageX - canvas_pos.left;
-    last_mouseup.y = event.pageY - canvas_pos.top;
+    last_mouseup.x = event.pageX - canvas_pos.left + 6;
+    last_mouseup.y = event.pageY - canvas_pos.top - 1;
 });
 
 $("div.end-song td.source").mousedown (function (event) {
@@ -186,6 +186,45 @@ $("div.end-song td.source").mousedown (function (event) {
 
     trigger.css ("color", "#2ecc40");
     trigger.css ("font-weight", "bold");
+});
+
+$("div.new-song td.song-fields").mousedown (function (event) {
+    trigger = $(event.currentTarget);
+
+    node = $(trigger.parent ());
+
+    while (node.prop ("tagName") != "DIV") {
+	node = $(node.parent ());
+    }
+
+    song_idx = node.data ("song-idx");
+    field = trigger.data ("field");
+
+    tar = $("#" + field + "-" + song_idx);
+
+    tar.html (trigger.html ());
+
+    tar.css ("color", "#2ecc40");
+    tar.css ("font-weight", "bold");
+
+    $("#input-" + field + "-" + song_idx).val (trigger.html ());
+});
+
+$("div.end-song td.song-fields").mousedown (function (event) {
+    var trigger = $(event.currentTarget);
+
+    var node = $(trigger.parent ());
+
+    while (node.prop ("tagName") != "DIV") {
+	node = $(node.parent ());
+    }
+
+    var song_idx = node.data ("song-idx");
+
+    $("#input-" + trigger.attr ("id")).val (trigger.data ("startval"));
+    trigger.html (trigger.data ("startval"));
+    trigger.css ("color", "#000000");
+    trigger.css ("font-weight", "normal");
 });
 
 var canvas_objs, canvas, canvas_pos, last_mousedown, last_mouseup;
