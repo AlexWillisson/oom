@@ -35,9 +35,9 @@ $body = "";
 
 $body .= "<table>\n";
 $body .= "<tr>\n";
-$body .= "<th class='artist'>Artist</th>\n";
-$body .= "<th class='album'>Album</th>\n";
 $body .= "<th class='song'>Song</th>\n";
+$body .= "<th class='album'>Album</th>\n";
+$body .= "<th class='artist'>Artist</th>\n";
 foreach ($sources as $s) {
 	$body .= "<th class='source'>\n";
 	$body .= $s;
@@ -49,9 +49,9 @@ while (($r = fetch ($q)) != NULL) {
 	$res = parse_results ($columns, $r);
 
 	$body .= "<tr>\n";
-	$body .= sprintf ("<td>%s</td>\n", $res['artist']);
-	$body .= sprintf ("<td>%s</td>\n", $res['album']);
 	$body .= sprintf ("<td>%s</td>\n", $res['name']);
+	$body .= sprintf ("<td>%s</td>\n", $res['album']);
+	$body .= sprintf ("<td>%s</td>\n", $res['artist']);
 
 	$js = json_decode ($res['sources']);
 	foreach (array_keys ($source_map) as $source) {

@@ -58,6 +58,13 @@ pstart ();
 
 require ("header.php");
 
+$picked_sources = json_decode ("" . @$_REQUEST['sources']);
+$match_map = json_decode ("" . @$_REQUEST['song_map'], true);
+
+if ($match_map == NULL) {
+	redirect ("list.php");
+}
+
 $source_map = fetch_sources ();
 $sources = array_map (function ($s) { return ($s); }, $source_map);
 
@@ -65,67 +72,45 @@ $new_songs = array ();
 $existing_songs = array ();
 $song_sources = array ();
 
-$song = (object) NULL;
-$song->name = "Somewhere";
-$song->album = "And Away We Go";
-$song->artist = "Scott & Brendo";
-$song->sources = array (3);
-$song->match_idx = 0;
-add_sources ($song);
+$keys = array_keys ($match_map);
+for ($idx = 0; $idx < count ($keys); $idx++) {
+	$columns = array ("name", "album", "artist", "sources", "song_id");
+	$stmt = sprintf ("select %s from songs where song_id = ?", 
+			 implode (", ", $columns));
+	$q = query ($stmt, $keys[$idx]);
 
-$new_songs[] = $song;
+	if (($r = fetch ($q)) == NULL) {
+		var_dump ("error, invalid song_id passed");
+		pfinish ();
+	}
 
-/* $song = (object) NULL; */
-/* $song->name = "skyrim theme"; */
-/* $song->album = "gaming fantasy"; */
-/* $song->artist = "taylor davis"; */
-/* $song->sources = array (3); */
-/* $song->match_idx = 0; */
-/* add_sources ($song); */
+	$res = parse_results ($columns, $r);
 
-/* $new_songs[] = $song; */
+	$song = (object) NULL;
+	$song->name = $res['name'];
+	$song->album = $res['album'];
+	$song->artist = $res['artist'];
+	$song->sources = json_decode ("" . $res['sources']);
+	$song->match_idx = $idx;
+	$song->song_id = $res['song_id'];
+	add_sources ($song);
 
-$song = (object) NULL;
-$song->name = "Skyrim Theme";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->sources = array (4);
-$song->match_idx = 0;
-$song->song_id = 202;
-add_sources ($song);
+	$existing_songs[] = $song;
 
-$existing_songs[] = $song;
+	for ($jdx = 0; $jdx < count ($match_map[$keys[$idx]]); $jdx++) {
+		$raw_song = $match_map[$keys[$idx]][$jdx];
 
-/* $song = (object) NULL; */
-/* $song->name = "Zelda Medley"; */
-/* $song->album = "Gaming Fantasy"; */
-/* $song->artist = "Taylor Davis"; */
-/* $song->sources = array (3); */
-/* $song->match_idx = 1; */
-/* add_sources ($song); */
+		$song = (object) NULL;
+		$song->name = $raw_song[0];
+		$song->album = $raw_song[1];
+		$song->artist = $raw_song[2];
+		$song->sources = $picked_sources;
+		$song->match_idx = $idx;
+		add_sources ($song);
 
-/* $new_songs[] = $song; */
-
-/* $song = (object) NULL; */
-/* $song->name = "zelda medley"; */
-/* $song->album = "gaming fantasy"; */
-/* $song->artist = "taylor davis"; */
-/* $song->sources = array (3); */
-/* $song->match_idx = 1; */
-/* add_sources ($song); */
-
-/* $new_songs[] = $song; */
-
-/* $song = (object) NULL; */
-/* $song->name = "Zelda Medley"; */
-/* $song->album = "Gaming Fantasy"; */
-/* $song->artist = "Taylor Davis"; */
-/* $song->sources = array (4); */
-/* $song->match_idx = 1; */
-/* $song->song_id = 100; */
-/* add_sources ($song); */
-
-/* $existing_songs[] = $song; */
+		$new_songs[] = $song;
+	}
+}
 
 $body .= "<form action='add.php' method='post' id='songs-form'>\n";
 $body .= "<input type='hidden' name='add' value='2' />\n";

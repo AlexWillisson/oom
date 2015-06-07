@@ -24,6 +24,8 @@ function fix_id ($id) {
 
 require ("common.php");
 
+$pstart_args->js[] = "/oom/jquery-2.1.4.js";
+
 pstart ();
 
 $add = 0 + @$_REQUEST['add'];
@@ -107,10 +109,10 @@ if ($add == 0) {
 
 		while (($r = fetch ($q)) != NULL) {
 			$found_dup = true;
-			if ( ! isset ($dups[$lines[$idx]])) {
-				$dups[$lines[$idx]] = array ();
+			if (isset ($dups[$lines[$idx]])) {
+				$dups[$r[0]] = array ();
 			}
-			$dups[$lines[$idx]][] = $r[0];
+			$dups[$r[0]][] = array ($song, $album, $artist);
 		}
 
 		if ( ! $found_dup) {
@@ -126,7 +128,18 @@ if ($add == 0) {
 	}
 
 	if (count ($dups) > 0) {
-		var_dump ($dups);
+		echo ("<form action='matcher.php' method='post'"
+		      ." id='matcher-form'>\n");
+
+		echo (sprintf ("<input name='sources' value='%s' />\n",
+			       h($js_sources)));
+		echo (sprintf ("<input name='song_map' value='%s' />\n",
+			       h(json_encode ($dups))));
+
+		echo ("</form>\n");
+
+		echo ("<script>$('#matcher-form').submit ()</script>\n");
+
 		pfinish ();
 	}
 
