@@ -120,8 +120,9 @@ add_sources ($song);
 $existing_songs[] = $song;
 
 $body .= "<form action='add.php' method='post' id='songs-form'>\n";
+$body .= "<input type='hidden' name='add' value='2' />\n";
 
-$body .= "<div style='float: left; width: 100%; padding-bottom: 5em;'>\n";
+$body .= "<div class='main-interface'>\n";
 
 $body .= "<div style='float: left; width: 35%;' id='new-songs-body'>\n";
 
@@ -168,12 +169,12 @@ for ($idx = 0; $idx < count ($new_songs); $idx++) {
 
 $body .= "</div>\n";
 
-$body .= "<div style='float: left; width: 29%; height: 50em;'>\n";
-$body .= "<canvas id='lines' width='500' height='800'>\n";
+$body .= "<div style='float: left; width: 29%;'>\n";
+$body .= "<canvas id='lines' width='10' height='100'>\n";
 $body .= "</canvas>\n";
 $body .= "</div>\n";
 
-$body .= "<div style='float: left; width: 35%; height: 50em;'>\n";
+$body .= "<div style='float: left; width: 35%;'>\n";
 $body .= "<div class='end-song-padding'>\n";
 $body .= "</div>\n";
 
@@ -244,6 +245,12 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 
 $body .= "</div>\n";
 
+$body .= "</div>\n";
+
+$body .= "</div>\n";
+
+$body .= "<div class='submit-area'>\n";
+$body .= "<input type='submit' value='submit' />\n";
 $body .= "</div>\n";
 
 $body .= "</form>\n";

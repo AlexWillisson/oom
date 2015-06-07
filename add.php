@@ -126,6 +126,9 @@ if ($add == 0) {
 
 	$t = "list.php";
 	redirect ($t);
+} else if ($add == 2) {
+	var_dump ($_REQUEST);
+	pfinish ();
 }
 
 echo ($body);

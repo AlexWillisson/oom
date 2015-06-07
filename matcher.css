@@ -39,3 +39,18 @@ td.changed-source {
     color: #2ecc40;
     font-weight: bold;
 }
+
+div.matcher-area {
+    float: left;
+    width: 100%;
+}
+
+div.main-interface {
+    float: left;
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+div.submit-area {
+    text-align: center;
+}

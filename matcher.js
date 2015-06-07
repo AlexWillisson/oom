@@ -87,7 +87,7 @@ function draw () {
     setTimeout (draw, 30);
 
     ctx = canvas[0].getContext("2d");
-    ctx.clearRect (0, 0, canvas.width (), canvas.height ());
+    ctx.clearRect (-50, -50, canvas.width () + 50, canvas.height () + 50);
 
     dragged = null;
     for (idx = 0; idx < canvas_objs.length; idx++) {
