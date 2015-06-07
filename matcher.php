@@ -16,6 +16,29 @@ function fetch_sources () {
 	return ($sources);
 }
 
+function add_sources ($song) {
+	global $song_sources;
+
+	$idx = $song->match_idx;
+	$sources = $song->sources;
+
+	if (isset ($song_sources[$idx])) {
+		$src = $song_sources[$idx];
+
+		if (is_array ($sources)) {
+			$song_sources[$idx] = array_merge ($src, $sources);
+		} else {
+			$song_sources[$idx][] = $sources;
+		}
+	} else {
+		if (is_array ($sources)) {
+			$song_sources[$idx] = $sources;
+		} else {
+			$song_sources[$idx] = array ($sources);
+		}
+	}
+}
+
 require ("common.php");
 
 $pstart_args->js[] = "/oom/jquery-2.1.4.js";
@@ -34,6 +57,7 @@ $sources = array_map (function ($s) { return ($s); }, $source_map);
 
 $new_songs = array ();
 $existing_songs = array ();
+$song_sources = array ();
 
 $song = (object) NULL;
 $song->name = "Chrono Trigger Theme";
@@ -41,6 +65,7 @@ $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
 $song->sources = array (3);
 $song->match_idx = 0;
+add_sources ($song);
 
 $new_songs[] = $song;
 
@@ -50,6 +75,7 @@ $song->album = "gaming fantasy";
 $song->artist = "taylor davis";
 $song->sources = array (3);
 $song->match_idx = 0;
+add_sources ($song);
 
 $new_songs[] = $song;
 
@@ -59,6 +85,7 @@ $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
 $song->sources = array (4);
 $song->match_idx = 0;
+add_sources ($song);
 
 $existing_songs[] = $song;
 
@@ -68,6 +95,7 @@ $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
 $song->sources = array (3);
 $song->match_idx = 1;
+add_sources ($song);
 
 $new_songs[] = $song;
 
@@ -77,6 +105,7 @@ $song->album = "gaming fantasy";
 $song->artist = "taylor davis";
 $song->sources = array (3);
 $song->match_idx = 1;
+add_sources ($song);
 
 $new_songs[] = $song;
 
@@ -86,6 +115,7 @@ $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
 $song->sources = array (4);
 $song->match_idx = 1;
+add_sources ($song);
 
 $existing_songs[] = $song;
 
@@ -172,11 +202,15 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
 	$body .= sprintf ("<td>%s</td>\n", h($song->album));
 
+	$all_sources = $song_sources[$song->match_idx];
+
 	foreach (array_keys ($source_map) as $source) {
 		if (in_array ($source, $song->sources)) {
-			$body .= sprintf ("<td class='source'>y</td>\n");
+			$body .= "<td class='source'>y</td>\n";
+		} else if (in_array ($source, $all_sources)) {
+			$body .= "<td class='source changed-source'>y</td>\n";
 		} else {
-			$body .= sprintf ("<td class='source'>n</td>\n");
+			$body .= "<td class='source'>n</td>\n";
 		}
 	}
 

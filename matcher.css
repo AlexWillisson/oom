@@ -30,3 +30,12 @@ div.end-song table {
 div.end-song-padding {
     margin-top: 5em;
 }
+
+td.source {
+    font-size: medium;
+}
+
+td.changed-source {
+    color: #2ecc40;
+    font-weight: bold;
+}
