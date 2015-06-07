@@ -23,7 +23,9 @@ pstart ();
 require ("header.php");
 
 $columns = array ("artist", "album", "name", "sources");
-$stmt = sprintf ("select %s from songs", implode (", ", $columns));
+$stmt = sprintf ("select %s from songs order by"
+		 ." artist asc, album asc, name asc, song_id asc",
+		 implode (", ", $columns));
 $q = query ($stmt);
 
 $source_map = fetch_sources ();

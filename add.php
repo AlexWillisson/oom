@@ -16,6 +16,12 @@ function fetch_sources () {
 	return ($sources);
 }
 
+function fix_id ($id) {
+	$cleared = preg_replace ("/[^a-zA-Z0-9\s]/", "", $id);
+
+	return (h(preg_replace ("/[\s]/", "-", $cleared)));
+}
+
 require ("common.php");
 
 pstart ();
@@ -127,8 +133,36 @@ if ($add == 0) {
 	$t = "list.php";
 	redirect ($t);
 } else if ($add == 2) {
-	var_dump ($_REQUEST);
-	pfinish ();
+	$song_ids = json_decode ("" . @$_REQUEST['song_ids']);
+
+	$source_map = fetch_sources ();
+
+	for ($idx = 0; $idx < count ($song_ids); $idx++) {
+		$song_id = 0 + @$_REQUEST['song-id-' . $idx];
+		$name = "" . @$_REQUEST['name-' . $idx];
+		$album = "" . @$_REQUEST['album-' . $idx];
+		$artist = "" . @$_REQUEST['artist-' . $idx];
+
+		$sources = array ();
+
+		$keys = array_keys ($source_map);
+
+		for ($jdx = 0; $jdx < count ($keys); $jdx++) {
+			$key = $keys[$jdx];
+			$id = fix_id ($source_map[$key]) . "-" . $idx;
+			if (0 + @$_REQUEST[$id] == 1) {
+				$sources[] = $key;
+			}
+		}
+
+		$stmt = "update songs set name = ?, album = ?,"
+			." artist = ?, sources = ? where song_id = ?";
+		$args = array ($name, $album, $artist, json_encode ($sources),
+			       $song_id);
+		$q = query ($stmt, $args);
+	}
+
+	redirect ("list.php");
 }
 
 echo ($body);

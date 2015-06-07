@@ -66,64 +66,66 @@ $existing_songs = array ();
 $song_sources = array ();
 
 $song = (object) NULL;
-$song->name = "Chrono Trigger Theme";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
+$song->name = "Somewhere";
+$song->album = "And Away We Go";
+$song->artist = "Scott & Brendo";
 $song->sources = array (3);
 $song->match_idx = 0;
 add_sources ($song);
 
 $new_songs[] = $song;
 
-$song = (object) NULL;
-$song->name = "chrono trigger theme";
-$song->album = "gaming fantasy";
-$song->artist = "taylor davis";
-$song->sources = array (3);
-$song->match_idx = 0;
-add_sources ($song);
+/* $song = (object) NULL; */
+/* $song->name = "skyrim theme"; */
+/* $song->album = "gaming fantasy"; */
+/* $song->artist = "taylor davis"; */
+/* $song->sources = array (3); */
+/* $song->match_idx = 0; */
+/* add_sources ($song); */
 
-$new_songs[] = $song;
+/* $new_songs[] = $song; */
 
 $song = (object) NULL;
-$song->name = "Chrono Trigger Theme";
+$song->name = "Skyrim Theme";
 $song->album = "Gaming Fantasy";
 $song->artist = "Taylor Davis";
 $song->sources = array (4);
 $song->match_idx = 0;
+$song->song_id = 202;
 add_sources ($song);
 
 $existing_songs[] = $song;
 
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->sources = array (3);
-$song->match_idx = 1;
-add_sources ($song);
+/* $song = (object) NULL; */
+/* $song->name = "Zelda Medley"; */
+/* $song->album = "Gaming Fantasy"; */
+/* $song->artist = "Taylor Davis"; */
+/* $song->sources = array (3); */
+/* $song->match_idx = 1; */
+/* add_sources ($song); */
 
-$new_songs[] = $song;
+/* $new_songs[] = $song; */
 
-$song = (object) NULL;
-$song->name = "zelda medley";
-$song->album = "gaming fantasy";
-$song->artist = "taylor davis";
-$song->sources = array (3);
-$song->match_idx = 1;
-add_sources ($song);
+/* $song = (object) NULL; */
+/* $song->name = "zelda medley"; */
+/* $song->album = "gaming fantasy"; */
+/* $song->artist = "taylor davis"; */
+/* $song->sources = array (3); */
+/* $song->match_idx = 1; */
+/* add_sources ($song); */
 
-$new_songs[] = $song;
+/* $new_songs[] = $song; */
 
-$song = (object) NULL;
-$song->name = "Zelda Medley";
-$song->album = "Gaming Fantasy";
-$song->artist = "Taylor Davis";
-$song->sources = array (4);
-$song->match_idx = 1;
-add_sources ($song);
+/* $song = (object) NULL; */
+/* $song->name = "Zelda Medley"; */
+/* $song->album = "Gaming Fantasy"; */
+/* $song->artist = "Taylor Davis"; */
+/* $song->sources = array (4); */
+/* $song->match_idx = 1; */
+/* $song->song_id = 100; */
+/* add_sources ($song); */
 
-$existing_songs[] = $song;
+/* $existing_songs[] = $song; */
 
 $body .= "<form action='add.php' method='post' id='songs-form'>\n";
 $body .= "<input type='hidden' name='add' value='2' />\n";
@@ -195,8 +197,12 @@ usort ($existing_songs,
 	       return ($a->match_idx > $b->match_idx);
        });
 
+$song_ids = array ();
+
 for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 	$song = $existing_songs[$idx];
+
+	$song_ids[] = $song->match_idx;
 
 	$body .= sprintf ("<div class='end-song' id='song-%d'"
 			  ." data-song-idx='%d'>\n",
@@ -213,6 +219,9 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 	}
 	$body .= "</tr>\n";
 	$body .= "<tr>\n";
+	$body .= sprintf ("<input type='hidden' name='song-id-%d'"
+			  ." value='%d' />\n",
+			  $song->match_idx, $song->song_id);
 	$body .= sprintf ("<td class='song-fields' id='name-%d'"
 			  ." data-startval='%s'>%s</td>\n",
 			  $song->match_idx, h($song->name), h($song->name));
@@ -288,6 +297,10 @@ $body .= "</div>\n";
 $body .= "<div class='submit-area'>\n";
 $body .= "<input type='submit' value='submit' />\n";
 $body .= "</div>\n";
+
+$body .= sprintf ("<input type='hidden' name='song_ids' value='%s'"
+		  ." id='song_ids' />\n",
+		  json_encode ($song_ids));
 
 $body .= "</form>\n";
 
