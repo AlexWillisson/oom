@@ -119,6 +119,8 @@ add_sources ($song);
 
 $existing_songs[] = $song;
 
+$body .= "<form action='add.php' method='post' id='songs-form'>\n";
+
 $body .= "<div style='float: left; width: 100%; padding-bottom: 5em;'>\n";
 
 $body .= "<div style='float: left; width: 35%;' id='new-songs-body'>\n";
@@ -199,18 +201,39 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 	$body .= "</tr>\n";
 	$body .= "<tr>\n";
 	$body .= sprintf ("<td>%s</td>\n", h($song->name));
+	$body .= sprintf ("<input type='hidden' name='name-%d'"
+			  ." value='%s' />\n",
+			  h($song->match_idx), h($song->name));
 	$body .= sprintf ("<td>%s</td>\n", h($song->artist));
+	$body .= sprintf ("<input type='hidden' name='artist-%d'"
+			  ." value='%s' />\n",
+			  h($song->match_idx), h($song->artist));
 	$body .= sprintf ("<td>%s</td>\n", h($song->album));
+	$body .= sprintf ("<input type='hidden' name='album-%d'"
+			  ." value='%s'/ >\n",
+			  h($song->match_idx), h($song->album));
 
 	$all_sources = $song_sources[$song->match_idx];
 
 	foreach (array_keys ($source_map) as $source) {
 		if (in_array ($source, $song->sources)) {
 			$body .= "<td class='source'>y</td>\n";
+			$body .= sprintf ("<input type='hidden'"
+					  ." name='%s-%d' value='%s' />\n",
+					  h($source_map[$source]),
+					  h($song->match_idx), 1);
 		} else if (in_array ($source, $all_sources)) {
 			$body .= "<td class='source changed-source'>y</td>\n";
+			$body .= sprintf ("<input type='hidden'"
+					  ." name='%s-%d' value='%s' />\n",
+					  h($source_map[$source]),
+					  h($song->match_idx), 1);
 		} else {
 			$body .= "<td class='source'>n</td>\n";
+			$body .= sprintf ("<input type='hidden'"
+					  ." name='%s-%d' value='%s' />\n",
+					  h($source_map[$source]),
+					  h($song->match_idx), 0);
 		}
 	}
 
@@ -222,6 +245,8 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 $body .= "</div>\n";
 
 $body .= "</div>\n";
+
+$body .= "</form>\n";
 
 $body .= "<script src='matcher.js'></script>\n";
 
