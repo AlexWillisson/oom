@@ -33,12 +33,6 @@ function pstart () {
 	echo ("<title>oom</title>\n");
 	echo ("<link rel='stylesheet' type='text/css' href='colors.css' />\n");
 	echo ("<link rel='stylesheet' type='text/css' href='style.css' />\n");
-	echo ("<script type='text/javascript' src='jquery-1.11.1.js'>");
-	echo ("</script>\n");
-	echo ("<script type='text/javascript' src='moment-2.8.3.js'>");
-	echo ("</script>\n");
-	echo ("<script type='text/javascript' src='common-tools.js'>");
-	echo ("</script>\n");
 	for ($idx = 0; $idx < count ($pstart_args->css); $idx++) {
 		$s = sprintf ("<link rel='stylesheet'"
                       ." type='text/css' href='%s' />\n",

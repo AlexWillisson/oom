@@ -39,6 +39,10 @@ function add_sources ($song) {
 	}
 }
 
+function fix_id ($id) {
+	return (h(preg_replace ("/[^a-zA-Z0-9]/", "-", $id)));
+}
+
 require ("common.php");
 
 $pstart_args->js[] = "/oom/jquery-2.1.4.js";
@@ -218,23 +222,38 @@ for ($idx = 0; $idx < count ($existing_songs); $idx++) {
 
 	foreach (array_keys ($source_map) as $source) {
 		if (in_array ($source, $song->sources)) {
-			$body .= "<td class='source'>y</td>\n";
+			$body .= sprintf ("<td class='source'"
+					  ." data-source='%s'>y</td>\n",
+					  fix_id ($source_map[$source]));
 			$body .= sprintf ("<input type='hidden'"
-					  ." name='%s-%d' value='%s' />\n",
-					  h($source_map[$source]),
-					  h($song->match_idx), 1);
+					  ." name='%s-%d' value='1'"
+					  ." id='%s-%d'/>\n",
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx),
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx));
 		} else if (in_array ($source, $all_sources)) {
-			$body .= "<td class='source changed-source'>y</td>\n";
+			$body .= sprintf ("<td class='source changed-source'"
+					  ." data-source='%s'>y</td>\n",
+					  fix_id ($source_map[$source]));
 			$body .= sprintf ("<input type='hidden'"
-					  ." name='%s-%d' value='%s' />\n",
-					  h($source_map[$source]),
-					  h($song->match_idx), 1);
+					  ." name='%s-%d' value='1'"
+					  ." id='%s-%d'/>\n",
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx),
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx));
 		} else {
-			$body .= "<td class='source'>n</td>\n";
+			$body .= sprintf ("<td class='source'"
+					  ." data-source='%s'>n</td>\n",
+					  fix_id ($source_map[$source]));
 			$body .= sprintf ("<input type='hidden'"
-					  ." name='%s-%d' value='%s' />\n",
-					  h($source_map[$source]),
-					  h($song->match_idx), 0);
+					  ." name='%s-%d' value='0'"
+					  ." id='%s-%d'/>\n",
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx),
+					  fix_id ($source_map[$source]),
+					  h($song->match_idx));
 		}
 	}
 

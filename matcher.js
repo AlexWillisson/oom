@@ -164,6 +164,30 @@ $("body").mouseup (function (event) {
     last_mouseup.y = event.pageY - canvas_pos.top;
 });
 
+$("div.end-song td.source").mousedown (function (event) {
+    trigger = $(event.currentTarget);
+
+    node = $(trigger.parent ());
+
+    while (node.prop ("tagName") != "DIV") {
+	node = $(node.parent ());
+    }
+
+    song_idx = node.data ("song-idx");
+    source = trigger.data ("source");
+
+    if (trigger.html () == "n") {
+	trigger.html ("y");
+	$("#" + source + "-" + song_idx).val (1);
+    } else {
+	trigger.html ("n");
+	$("#" + source + "-" + song_idx).val (0);
+    }
+
+    trigger.css ("color", "#2ecc40");
+    trigger.css ("font-weight", "bold");
+});
+
 var canvas_objs, canvas, canvas_pos, last_mousedown, last_mouseup;
     
 function init_page (event) {
