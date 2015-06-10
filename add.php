@@ -83,21 +83,64 @@ if ($add == 0) {
 	$dups = array ();
 	for ($idx = 0; $idx < count ($lines); $idx++) {
 		$found_dup = false;
+		$line = trim ($lines[$idx]);
 
-		if (strlen ($lines[$idx]) <= 0) {
+		if (strlen ($line) <= 0) {
 			continue;
 		}
 
-		$tokens = explode (",", $lines[$idx]);
+		if (substr ($line, 0, 1) == "#") {
+			continue;
+		}
 
-		if (count ($tokens) != 3) {
+		$song_info = array ();
+		$song_info['song'] = null;
+		$song_info['album'] = null;
+		$song_info['artist'] = null;
+
+		if (substr ($line, 0, 1) == "!") {
+			$song_info['force'] = true;
+		} else {
+			$song_info['force'] = false;
+		}
+
+		$escaped = false;
+		$key = "song";
+		$err = false;
+		for ($jdx = 0; $jdx < strlen ($line); $jdx++) {
+			$c = substr ($line, $jdx, 1);
+
+			if ($jdx == 0 && $c == "!") {
+				continue;
+			}
+
+			if ($escaped) {
+				$escaped = false;
+				$song_info[$key] .= $c;
+			} else if ($c == "\\") {
+				$escaped = true;
+			} else if ($c == ",") {
+				if ($key == "song") {
+					$key = "album";
+				} else if ($key == "album") {
+					$key = "artist";
+				} else if ($key == "artist") {
+					$err = true;
+					break;
+				}
+			} else {
+				$song_info[$key] .= $c;
+			}
+		}
+
+		if ($err) {
 			$errors[] = $lines[$idx];
 			continue;
 		}
 
-		$song = trim ($tokens[0]);
-		$album = trim ($tokens[1]);
-		$artist = trim ($tokens[2]);
+		$song = trim ($song_info['song']);
+		$album = trim ($song_info['album']);
+		$artist = trim ($song_info['artist']);
 
 		$fuzz_song = metaphone (preg_replace ('/&/', 'and', $song));
 		$fuzz_album = metaphone (preg_replace ('/&/', 'and', $album));
@@ -107,12 +150,14 @@ if ($add == 0) {
 			    ." where fuzzy_name=? and fuzzy_artist=?",
 			    array ($fuzz_song, $fuzz_artist));
 
-		while (($r = fetch ($q)) != NULL) {
-			$found_dup = true;
-			if (isset ($dups[$lines[$idx]])) {
-				$dups[$r[0]] = array ();
+		if ($song_info['force'] == false) {
+			while (($r = fetch ($q)) != NULL) {
+				$found_dup = true;
+				if (isset ($dups[$lines[$idx]])) {
+					$dups[$r[0]] = array ();
+				}
+				$dups[$r[0]][] = array ($song, $album, $artist);
 			}
-			$dups[$r[0]][] = array ($song, $album, $artist);
 		}
 
 		if ( ! $found_dup) {
